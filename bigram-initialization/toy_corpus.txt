@@ -1,0 +1,26 @@
+Language models learn patterns by predicting the next token from context.
+This toy corpus repeats a few themes so that a bigram-based initialization has usable structure.
+Embedding tables and unembedding tables can be initialized from a low-rank factorization.
+When the same local patterns appear many times, the bigram matrix becomes easier to estimate.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox likes smooth embeddings.
+The quick brown fox learns from repeated context.
+Research code should make experiments easy to rerun and compare.
+We want a GPT style model with a custom embedding initialization.
+The initialization should reflect token transition statistics from the corpus.
+Better initial logits may reduce early training loss.
+The model still needs transformer layers, positional embeddings, and optimization.
+This corpus is small, but it is enough for a sanity check.
+Language models learn patterns by predicting the next token from context.
+This toy corpus repeats a few themes so that a bigram-based initialization has usable structure.
+Embedding tables and unembedding tables can be initialized from a low-rank factorization.
+When the same local patterns appear many times, the bigram matrix becomes easier to estimate.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox likes smooth embeddings.
+The quick brown fox learns from repeated context.
+Research code should make experiments easy to rerun and compare.
+We want a GPT style model with a custom embedding initialization.
+The initialization should reflect token transition statistics from the corpus.
+Better initial logits may reduce early training loss.
+The model still needs transformer layers, positional embeddings, and optimization.
+This corpus is small, but it is enough for a sanity check.
