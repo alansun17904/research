@@ -1,0 +1,12 @@
+{"clean":"Question: Is True and False equal to True?\nAnswer:","corrupted":"Question: Is True and True equal to True?\nAnswer:","label":"False"}
+{"clean":"Question: Is not False equal to True?\nAnswer:","corrupted":"Question: Is not True equal to True?\nAnswer:","label":"True"}
+{"clean":"Question: Compute 12 + 7 =","corrupted":"Question: Compute 12 + 3 =","label":"19"}
+{"clean":"Question: Compute 41 - 9 =","corrupted":"Question: Compute 41 - 6 =","label":"32"}
+{"clean":"Question: The day after Monday is","corrupted":"Question: The day after Tuesday is","label":"Tuesday"}
+{"clean":"Question: The month after June is","corrupted":"Question: The month after July is","label":"July"}
+{"clean":"Question: Paris is in","corrupted":"Question: Tokyo is in","label":"France"}
+{"clean":"Question: A cat says","corrupted":"Question: A dog says","label":"meow"}
+{"clean":"Question: True or False and False evaluates to","corrupted":"Question: True and False and False evaluates to","label":"True"}
+{"clean":"Question: 8 multiplied by 7 is","corrupted":"Question: 8 multiplied by 5 is","label":"56"}
+{"clean":"Question: The capital of Italy is","corrupted":"Question: The capital of Spain is","label":"Rome"}
+{"clean":"Question: The opposite of hot is","corrupted":"Question: The opposite of cold is","label":"cold"}

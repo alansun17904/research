@@ -1,0 +1,9 @@
+.DS_Store
+**/.DS_Store
+
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+benchmarks/results/
+benchmarks/data/c4_filter_small_*.jsonl
