@@ -2,7 +2,7 @@
 
 ## What This Module Does
 
-`eap/core.py` scores edges in a transformer computation graph based on how they influence the model's output. In a nutshell, we are trying to figure out:
+`eap/core.py` scores edges or nodes in a transformer computation graph based on how they influence the model's output. In a nutshell, we are trying to figure out:
 
 > What model components most *causally influence* final logits / the model's performance?
 
@@ -29,10 +29,10 @@ this requires exactly two forward passes (one to compute $e$ and another to comp
 
 ## The Main Interaction Flow
 
-`eap/core.py` computes edge attribution through two stages:
+`eap/core.py` computes attribution through two stages:
 
 1. Build a graph of model components such as the input, attention heads, MLPs, and logits.
-2. Run an attribution pass that assigns a numeric score to each edge in that graph.
+2. Run an attribution pass that assigns a numeric score to each edge or hooked node in that graph.
 
 The exposed API is tight:
 
@@ -43,7 +43,8 @@ Most code uses the module like this:
 
 ```python
 graph = Graph.from_model(model)
-edge_scores = attribute(model, graph, dataloader, metric)
+edge_scores = attribute(model, graph, dataloader, metric, patch_type="edge")
+node_scores = attribute(model, graph, dataloader, metric, patch_type="node")
 ```
 
 What happens behind the scenes:
@@ -52,7 +53,7 @@ What happens behind the scenes:
 2. The dataloader provides batches of `(clean, corrupted, label)` examples.
 3. `attribute(...)` compares clean and corrupted runs.
 4. The code uses TransformerLens hooks to measure how activation differences flow through the model.
-5. Each graph edge gets a score, and the same scores are also returned as a NumPy vector.
+5. Each graph edge or hooked node gets a score, and the same scores are also returned as a NumPy vector.
 
 ## The Core Mental Model
 
@@ -68,7 +69,7 @@ Think of the module as combining two views of the same transformer:
 - which nodes exist
 - which edges are legal
 - which hook names correspond to each node
-- where each source and target lives inside the score matrix
+- where each source and target lives inside the score tensor
 
 ## Main Concepts
 
@@ -92,37 +93,40 @@ we build two hooks:
 - source hook: `blocks.0.attn.hook_result`, slice head 1
 - target hook: `blocks.2.attn.hook_result`, slice head 3
 
-These hooks are the combined into a single `score` matrix:
+These hooks are then combined into a single `score` matrix:
 - row: `graph.forward_index(a0.h1)`
 - col: `graph.backward_index(a2.h3, qkv="q")`
 - final score: the averaged value of scores[row, col] after all examples and IG steps
 
-### Score Matrix
+If we instead score the node `a0.h1` itself, we use the same forward hook to capture its clean-corrupted activation difference and a backward hook on that node's output. In that mode, the score tensor is just a vector indexed by `graph.forward_index(...)`.
 
-Internally, attribution is accumulated in a matrix:
+### Score Tensor
 
-- rows = source-side slots from the forward pass
-- columns = target-side slots from the backward pass
+Internally, attribution is accumulated in one of two layouts:
 
-Each edge knows which row and column belong to it, so the final matrix can be converted back into per-edge scores.
+- edge patching: a matrix with rows = source-side slots from the forward pass and columns = target-side slots from the backward pass
+- node patching: a vector with one entry per hooked forward node (`graph.n_forward`)
+
+Each edge knows which row and column belong to it, and each hooked node knows its forward index, so the final tensor can be converted back into either per-edge or per-node scores.
 
 ## How Attribution Works
 
-`attribute(...)` currently runs one method: an Integrated Gradients-style edge attribution pass.
+`attribute(...)` currently runs one method: an Integrated Gradients-style attribution pass over either edges or nodes.
 
 The flow is:
 
 1. Run the corrupted and clean examples to capture the difference at the model input hook.
 2. Record activation differences for candidate source nodes with forward hooks.
 3. Interpolate from corrupted input activations toward clean input activations.
-4. Backpropagate the user-provided `metric(...)` through target hooks.
-5. Accumulate source-target contributions into the score matrix.
-6. Copy the relevant matrix cells back onto `graph.edge_list`.
+4. Backpropagate the user-provided `metric(...)` through either target hooks (`patch_type="edge"`) or node-output hooks (`patch_type="node"`).
+5. Accumulate contributions into the score tensor.
+6. Copy the relevant tensor entries back onto `graph.edge_list` or the hooked `NodeSpec`s.
 
 The result is both:
 
-- a returned NumPy vector of edge scores
-- `edge.score` values stored on each `EdgeSpec`
+- a returned NumPy vector of edge or node scores
+- `edge.score` values stored on each `EdgeSpec` for edge patching
+- `node.score` values stored on each hooked `NodeSpec` for node patching
 
 ## Important Pieces in the File
 
@@ -134,7 +138,7 @@ These small dataclasses hold graph metadata:
 - layer/head information
 - hook names
 - edge endpoints
-- optional edge score
+- optional node or edge score
 
 ### `Graph`
 
@@ -160,8 +164,10 @@ The runtime helpers follow the execution order:
 - `_capture_input_endpoints(...)`: captures clean/corrupted input states and clean logits
 - `make_hooks_and_matrices(...)`: allocates the temporary activation buffer and builds hook lists
 - `_run_source_chunk_ig(...)`: runs one source chunk through the IG loop
+- `_run_source_chunk_node_ig(...)`: runs the node-patching IG loop for one source chunk
 - `get_scores_eap_ig(...)`: drives batching, chunking, and score accumulation
 - `_assign_edge_scores(...)`: maps matrix entries back onto graph edges
+- `_assign_node_scores(...)`: maps vector entries back onto hooked graph nodes
 
 ## Why Chunking Exists
 
@@ -173,6 +179,7 @@ Attribution can be memory-heavy, so the module can split the work:
 - `source_chunk_size=...`: also limit how many forward-side sources are handled at once
 
 This changes performance and memory use, but not the overall meaning of the scores.
+For node patching, only `source_chunk_size=...` matters because there is no backward target matrix to chunk.
 
 ## Token Aggregation
 
@@ -195,6 +202,15 @@ Using `benchmarks/benchmark_token_aggregation_natural.py` with `attn-only-2l`, `
 | `avg-tok` | 45.65 | 1.13 | 0.037 | 0.02x |
 
 On this setup, `last-tok` and `avg-tok` reduced the activation workspace by about 50x versus `all-tok`, but they were slightly slower in wall-clock latency on CPU. The benchmark harness also records `rss_mb_delta`, but that metric was allocator-noisy, so the table above reports the stable activation-buffer estimate instead.
+
+Under the same CPU setup with `token_aggregation="all-tok"`, changing `patch_type` from edges to nodes gives:
+
+| `patch_type` | Mean latency (s) | Latency stdev (s) | Mean RSS delta (MB, noisy) | Activation buffer estimate (MB) | Score tensor estimate (KB) | Total attribution workspace estimate (MB) | Relative latency |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `edge` | 34.65 | 1.18 | 139.60 | 1.855 | 3.79 | 1.859 | 1.00x |
+| `node` | 47.66 | 4.23 | 151.56 | 1.855 | 0.07 | 1.856 | 1.38x |
+
+On this benchmark, node patching was about 38% slower than edge patching. The activation-buffer estimate stayed the same because both modes reuse the same forward-side activation workspace, which dominates memory here. Node patching does save score-tensor memory, but for this `attn-only-2l` graph that difference is only about `3.72 KB` (`969` edge-score slots versus `19` node-score slots), so the total estimated attribution workspace barely changes. The mean RSS delta was slightly higher for node patching, but that metric remained allocator-noisy across repeats.
 
 The final edge-score vectors from this run are stored in `benchmarks/results/c4_filter_small_100_token_aggregation_24w/` as:
 

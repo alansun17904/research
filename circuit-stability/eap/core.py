@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Literal, Optional, Union
@@ -15,9 +16,10 @@ from transformer_lens.utils import get_attention_mask
 
 QKV = Optional[Literal["q", "k", "v"]]
 TokenAggregation = Literal["all-tok", "last-tok", "avg-tok"]
+PatchType = Literal["edge", "node"]
 
 
-@dataclass(frozen=True)
+@dataclass
 class NodeSpec:
     name: str
     kind: str
@@ -27,6 +29,7 @@ class NodeSpec:
     head: Optional[int] = None
     kv_head: Optional[int] = None
     qkv_inputs: Optional[tuple[str, str, str]] = None
+    score: Optional[float] = None
 
 
 @dataclass
@@ -301,6 +304,12 @@ class Graph:
             output[i] = 0.0 if edge.score is None else float(edge.score)
         return output
 
+    def node_vector(self) -> np.ndarray:
+        output = np.empty(self.n_forward, dtype=np.float32)
+        for index, node in enumerate(_hooked_nodes(self)):
+            output[index] = 0.0 if node.score is None else float(node.score)
+        return output
+
     def get_scores(self, nonzero: bool = False, sort: bool = True) -> torch.Tensor:
         values = [float(edge.score or 0.0) for edge in self.edge_list]
         if nonzero:
@@ -491,6 +500,34 @@ def _backward_accumulation_hook(
     return hook_fn
 
 
+def _node_backward_accumulation_hook(
+    activation_difference: Tensor,
+    scores: Tensor,
+    source_start: int,
+    local_row_index: int,
+    node: NodeSpec,
+    token_aggregation: TokenAggregation,
+):
+    def hook_fn(gradients, hook):
+        grad_tensor = gradients[0] if isinstance(gradients, tuple) else gradients
+        if node.kind == "attn":
+            grad_tensor = grad_tensor[:, :, node.head, :]
+        batch_size = grad_tensor.shape[0]
+        grad = _aggregate_tokens(grad_tensor.detach().mean(dim=0), token_aggregation)
+        if token_aggregation == "all-tok":
+            prev = activation_difference[:, local_row_index, :]
+            contribution = batch_size * torch.einsum("pd,pd->", prev, grad)
+        else:
+            prev = activation_difference[local_row_index, :]
+            contribution = batch_size * torch.einsum("d,d->", prev, grad)
+        scores[source_start + local_row_index] += contribution.to(
+            device=scores.device, dtype=scores.dtype
+        )
+        return None
+
+    return hook_fn
+
+
 def make_hooks_and_matrices(
     model: HookedTransformer,
     graph: Graph,
@@ -637,7 +674,97 @@ def _run_source_chunk_ig(
             metric_value.backward()
 
 
+def _run_source_chunk_node_ig(
+    model: HookedTransformer,
+    graph: Graph,
+    scores: Tensor,
+    clean_tokens: Tensor,
+    corrupted_tokens: Tensor,
+    attention_mask: Tensor,
+    clean_logits: Tensor,
+    input_lengths: Tensor,
+    label: Tensor,
+    metric: Callable[[Tensor], Tensor],
+    source_start: int,
+    source_end: int,
+    n_pos: int,
+    steps: int,
+    corrupted_input: Tensor,
+    delta: Tensor,
+    token_aggregation: TokenAggregation,
+) -> None:
+    activation_shape = (
+        (n_pos, source_end - source_start, model.cfg.d_model)
+        if token_aggregation == "all-tok"
+        else (source_end - source_start, model.cfg.d_model)
+    )
+    activation_difference = torch.zeros(
+        activation_shape,
+        device=_model_device(model),
+        dtype=model.cfg.dtype,
+    )
+    fwd_hooks_corrupted, fwd_hooks_clean = _capture_hooks_for_prefix(
+        graph=graph,
+        activation_difference=activation_difference,
+        source_start=source_start,
+        source_end=source_end,
+        token_aggregation=token_aggregation,
+    )
+    bwd_hooks = []
+    for node in _hooked_nodes(graph):
+        row_index = graph.forward_index(node, attn_slice=False)
+        if row_index < source_start or row_index >= source_end:
+            continue
+        bwd_hooks.append(
+            (
+                node.out_hook,
+                _node_backward_accumulation_hook(
+                    activation_difference=activation_difference,
+                    scores=scores,
+                    source_start=source_start,
+                    local_row_index=row_index - source_start,
+                    node=node,
+                    token_aggregation=token_aggregation,
+                ),
+            )
+        )
+
+    with torch.inference_mode():
+        with model.hooks(fwd_hooks=fwd_hooks_corrupted):
+            _ = model(corrupted_tokens, attention_mask=attention_mask)
+        with model.hooks(fwd_hooks=fwd_hooks_clean):
+            _ = model(clean_tokens, attention_mask=attention_mask)
+
+    def interpolation_hook(step: int):
+        alpha = step / steps
+
+        def hook_fn(activations: Tensor, hook) -> Tensor:
+            interpolated = corrupted_input + alpha * delta
+            return interpolated.to(activations.device).requires_grad_(True)
+
+        return hook_fn
+
+    for step in range(1, steps + 1):
+        with model.hooks(
+            fwd_hooks=[(graph.nodes["input"].out_hook, interpolation_hook(step))],
+            bwd_hooks=bwd_hooks,
+        ):
+            logits = model(clean_tokens, attention_mask=attention_mask)
+            metric_value = metric(logits, clean_logits, input_lengths, label)
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore",
+                    message=(
+                        "Full backward hook is firing when gradients are computed "
+                        "with respect to module outputs.*"
+                    ),
+                )
+                metric_value.backward()
+
+
 def _assign_edge_scores(graph: Graph, scores: Tensor) -> np.ndarray:
+    for node in graph.node_list:
+        node.score = None
     score_array = scores.float().cpu().numpy()
     edge_vector = np.empty(len(graph.edge_list), dtype=score_array.dtype)
     for index, edge in enumerate(graph.edge_list):
@@ -645,6 +772,25 @@ def _assign_edge_scores(graph: Graph, scores: Tensor) -> np.ndarray:
         edge.score = float(edge_score)
         edge_vector[index] = edge_score
     return edge_vector
+
+
+def _assign_node_scores(graph: Graph, scores: Tensor) -> np.ndarray:
+    score_array = scores.float().cpu().numpy()
+    if score_array.shape != (graph.n_forward,):
+        raise ValueError(
+            "Node scores must have shape "
+            f"({graph.n_forward},), got {score_array.shape}"
+        )
+    for node in graph.node_list:
+        node.score = None
+    for edge in graph.edge_list:
+        edge.score = None
+    node_vector = np.empty(graph.n_forward, dtype=score_array.dtype)
+    for index, node in enumerate(_hooked_nodes(graph)):
+        node_score = score_array[index]
+        node.score = float(node_score)
+        node_vector[index] = node_score
+    return node_vector
 
 
 def get_scores_eap_ig(
@@ -658,6 +804,7 @@ def get_scores_eap_ig(
     chunk_size: Optional[int] = None,
     source_chunk_size: Optional[int] = None,
     token_aggregation: TokenAggregation = "all-tok",
+    patch_type: PatchType = "edge",
 ) -> Tensor:
     if token_aggregation not in {"all-tok", "last-tok", "avg-tok"}:
         raise ValueError(
@@ -665,16 +812,25 @@ def get_scores_eap_ig(
             "{'all-tok', 'last-tok', 'avg-tok'}, "
             f"got {token_aggregation}"
         )
+    if patch_type not in allowed_patch_types:
+        raise ValueError(
+            f"patch_type must be one of {allowed_patch_types}, got {patch_type}"
+        )
     score_dtype = getattr(model.cfg, "dtype", torch.float32)
     model_device = _model_device(model)
     score_device = model_device if model_device.type != "cpu" else torch.device("cpu")
-    scores = torch.zeros(
-        (graph.n_forward, graph.n_backward), device=score_device, dtype=score_dtype
+    score_shape = (
+        (graph.n_forward, graph.n_backward)
+        if patch_type == "edge"
+        else (graph.n_forward,)
     )
+    scores = torch.zeros(score_shape, device=score_device, dtype=score_dtype)
 
     total_items = 0
-    backward_chunks = _chunked_backward_specs(
-        graph, chunk_mode=chunk_mode, chunk_size=chunk_size
+    backward_chunks = (
+        _chunked_backward_specs(graph, chunk_mode=chunk_mode, chunk_size=chunk_size)
+        if patch_type == "edge"
+        else None
     )
     iterator = dataloader if quiet else tqdm(dataloader)
     for clean, corrupted, label in iterator:
@@ -697,13 +853,39 @@ def get_scores_eap_ig(
         )
 
         with _frozen_parameters(model):
-            for backward_specs in backward_chunks:
-                max_forward_index = max(spec[1] for spec in backward_specs)
+            if patch_type == "edge":
+                for backward_specs in backward_chunks:
+                    max_forward_index = max(spec[1] for spec in backward_specs)
+                    for source_start, source_end in _iter_source_ranges(
+                        max_forward_index=max_forward_index,
+                        source_chunk_size=source_chunk_size,
+                    ):
+                        _run_source_chunk_ig(
+                            model=model,
+                            graph=graph,
+                            scores=scores,
+                            clean_tokens=clean_tokens,
+                            corrupted_tokens=corrupted_tokens,
+                            attention_mask=attention_mask,
+                            clean_logits=clean_logits,
+                            input_lengths=input_lengths,
+                            label=label,
+                            metric=metric,
+                            backward_specs=backward_specs,
+                            source_start=source_start,
+                            source_end=source_end,
+                            n_pos=n_pos,
+                            steps=steps,
+                            corrupted_input=corrupted_input,
+                            delta=delta,
+                            token_aggregation=token_aggregation,
+                        )
+            else:
                 for source_start, source_end in _iter_source_ranges(
-                    max_forward_index=max_forward_index,
+                    max_forward_index=graph.n_forward,
                     source_chunk_size=source_chunk_size,
                 ):
-                    _run_source_chunk_ig(
+                    _run_source_chunk_node_ig(
                         model=model,
                         graph=graph,
                         scores=scores,
@@ -714,7 +896,6 @@ def get_scores_eap_ig(
                         input_lengths=input_lengths,
                         label=label,
                         metric=metric,
-                        backward_specs=backward_specs,
                         source_start=source_start,
                         source_end=source_end,
                         n_pos=n_pos,
@@ -735,6 +916,7 @@ def get_scores_eap_ig(
 
 allowed_aggregations = {"sum", "mean", "l2"}
 allowed_token_aggregations = {"all-tok", "last-tok", "avg-tok"}
+allowed_patch_types = {"edge", "node"}
 
 
 def attribute(
@@ -749,6 +931,7 @@ def attribute(
     chunk_size: Optional[int] = None,
     source_chunk_size: Optional[int] = None,
     token_aggregation: TokenAggregation = "all-tok",
+    patch_type: PatchType = "edge",
 ) -> np.ndarray:
     if aggregation not in allowed_aggregations:
         raise ValueError(
@@ -759,6 +942,12 @@ def attribute(
             "token_aggregation must be one of "
             f"{allowed_token_aggregations}, got {token_aggregation}"
         )
+    if patch_type not in allowed_patch_types:
+        raise ValueError(
+            f"patch_type must be one of {allowed_patch_types}, got {patch_type}"
+        )
+    if patch_type == "node" and aggregation == "l2":
+        raise ValueError("aggregation='l2' is not supported when patch_type='node'.")
     scores = get_scores_eap_ig(
         model=model,
         graph=graph,
@@ -770,6 +959,7 @@ def attribute(
         chunk_size=chunk_size,
         source_chunk_size=source_chunk_size,
         token_aggregation=token_aggregation,
+        patch_type=patch_type,
     )
 
     if aggregation == "mean":
@@ -777,6 +967,8 @@ def attribute(
     elif aggregation == "l2":
         scores = torch.linalg.vector_norm(scores, ord=2, dim=-1)
 
+    if patch_type == "node":
+        return _assign_node_scores(graph, scores)
     return _assign_edge_scores(graph, scores)
 
 

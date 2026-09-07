@@ -66,6 +66,14 @@ conda activate ml
 python experiment.py --use-c4-filter-small --max-documents 1000 --max-corpus-tokens 100000 --config-name tiny --init-scheme factorized_bigram --bigram-train-steps 200 --bigram-batch-size 256 --bigram-learning-rate 1e-3 --train-steps 50 --freeze-svd-token-tables
 ```
 
+Track how much of the initialization bigram model is still represented by the model's token tables during ordinary end-to-end training:
+
+```bash
+source ~/.zshrc >/dev/null 2>&1
+conda activate ml
+python plot_bigram_accuracy_during_training.py --use-c4-filter-small --max-documents 500 --max-corpus-tokens 100000 --config-name tiny --top-k-vocab 512 --train-steps 200
+```
+
 Instantiate the default GPT-2 architecture and keep the same initialization logic:
 
 ```bash

@@ -13,7 +13,6 @@ import torch
 from datasets import load_dataset
 from scipy.stats import spearmanr
 from torch.utils.data import DataLoader
-from transformer_lens import HookedTransformer
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -22,9 +21,11 @@ if str(ROOT) not in sys.path:
 from benchmark_edge_attribution import (  # noqa: E402
     PromptPairDataset,
     estimated_activation_buffer_mb,
+    estimated_score_tensor_mb,
     extraction_schema,
     get_extraction,
     get_metric,
+    load_model,
     rss_megabytes,
     seed_everything,
 )
@@ -47,6 +48,7 @@ def parse_args():
     parser.add_argument("--chunk-mode", choices=["none", "fixed", "layer"], default="none")
     parser.add_argument("--chunk-size", type=int, default=None)
     parser.add_argument("--source-chunk-size", type=int, default=None)
+    parser.add_argument("--patch-type", choices=["edge", "node"], default="edge")
     parser.add_argument("--min-words", type=int, default=64)
     parser.add_argument("--max-words", type=int, default=64)
     parser.add_argument(
@@ -126,7 +128,7 @@ def benchmark_mode(
             torch.cuda.reset_peak_memory_stats()
         start_rss = rss_megabytes()
         start = time.perf_counter()
-        edge_vector = attribute(
+        score_vector = attribute(
             model=model,
             graph=graph,
             dataloader=dataloader,
@@ -137,10 +139,11 @@ def benchmark_mode(
             chunk_size=args.chunk_size,
             source_chunk_size=args.source_chunk_size,
             token_aggregation=token_mode,
+            patch_type=args.patch_type,
         )
         latencies.append(time.perf_counter() - start)
         rss_deltas.append(rss_megabytes() - start_rss)
-        vectors.append(edge_vector.copy())
+        vectors.append(score_vector.copy())
 
     activation_buffer_mb = estimated_activation_buffer_mb(
         graph=graph,
@@ -150,6 +153,10 @@ def benchmark_mode(
         chunk_size=args.chunk_size,
         source_chunk_size=args.source_chunk_size,
         token_aggregation=token_mode,
+        patch_type=args.patch_type,
+    )
+    score_tensor_mb = estimated_score_tensor_mb(
+        graph=graph, model=model, patch_type=args.patch_type
     )
     exact_match = all(np.array_equal(vectors[0], vector) for vector in vectors[1:])
     peak_cuda_mb = (
@@ -162,6 +169,8 @@ def benchmark_mode(
         "latencies_s": latencies,
         "mean_rss_mb_delta": statistics.mean(rss_deltas),
         "activation_buffer_mb_est": activation_buffer_mb,
+        "score_tensor_mb_est": score_tensor_mb,
+        "attribution_workspace_mb_est": activation_buffer_mb + score_tensor_mb,
         "peak_cuda_mb": peak_cuda_mb,
         "exact_match_repeats": exact_match,
     }, vectors[-1]
@@ -195,7 +204,7 @@ def main():
         max_words=args.max_words,
     )
 
-    model = HookedTransformer.from_pretrained(args.model)
+    model = load_model(args.model)
     model.eval()
     model.cfg.use_attn_result = True
     model.cfg.use_split_qkv_input = True
@@ -212,7 +221,7 @@ def main():
         summary, vector = benchmark_mode(model, graph, dataloader, metric, args, token_mode)
         summaries.append(summary)
         vectors[token_mode] = vector
-        np.save(args.results_dir / f"{token_mode}_edge_scores.npy", vector)
+        np.save(args.results_dir / f"{token_mode}_{args.patch_type}_scores.npy", vector)
 
     correlations = correlation_table(vectors)
     save_correlation_csv(args.results_dir / "spearman_rank_correlation.csv", correlations)
@@ -225,6 +234,7 @@ def main():
         "ig_steps": args.ig_steps,
         "repeats": args.repeats,
         "chunk_mode": args.chunk_mode,
+        "patch_type": args.patch_type,
         "min_words": args.min_words,
         "max_words": args.max_words,
         "results_dir": str(args.results_dir),
