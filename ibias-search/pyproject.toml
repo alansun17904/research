@@ -1,0 +1,26 @@
+[project]
+name = "rttt"
+version = "0.1.0"
+description = "Linear attention experiments on the Kennel cluster"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "click>=8.1,<9",
+    "flash-linear-attention[cuda]==0.5.2; sys_platform == 'linux'",
+    "torch==2.11.0",
+    "transformers>=4.56,<5",
+]
+
+[tool.uv]
+package = false
+cache-dir = ".cache/uv"
+environments = ["sys_platform == 'darwin'", "sys_platform == 'linux'"]
+
+[tool.uv.sources]
+# macOS uses PyPI's native build; Linux uses an explicit CUDA wheel index.
+torch = [{ index = "pytorch-cu128", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
