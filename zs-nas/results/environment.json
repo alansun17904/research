@@ -1,0 +1,19 @@
+{
+  "python": "3.12.3",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "torch": "2.9.1+cu128",
+  "cuda": "12.8",
+  "gpu": "NVIDIA RTX A6000",
+  "device_count": 1,
+  "dtype": "torch.float32",
+  "matmul_precision": "highest",
+  "matmul_allow_tf32": false,
+  "slurm_job_id": "233139",
+  "cuda_visible_devices": "0",
+  "packages": {
+    "transformers": "4.57.1",
+    "datasets": "4.4.1",
+    "safetensors": "0.6.2"
+  },
+  "stage": "/tmp/zs-nas-awsun-233139"
+}

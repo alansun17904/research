@@ -1,0 +1,144 @@
+{
+  "model": "EleutherAI/pythia-70m",
+  "model_revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42",
+  "dataset": "Salesforce/wikitext",
+  "dataset_config": "wikitext-2-raw-v1",
+  "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+  "split": "validation",
+  "sample": "deterministic prefix; rows joined with two newlines; no special tokens",
+  "requested_input_tokens": 100000,
+  "device": "cuda:0",
+  "input_tokens": 100000,
+  "scored_tokens": 99999,
+  "context_length": 2048,
+  "stride": 1024,
+  "total_nll_nats": 505574.76231336594,
+  "mean_nll_nats": 5.05579818111547,
+  "perplexity": 156.929738721943,
+  "graph": {
+    "format": "pythia-70m-v1",
+    "checkpoint": {
+      "model": "EleutherAI/pythia-70m",
+      "revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42"
+    },
+    "weights": {
+      "embedding": "gpt_neox.embed_in",
+      "final_norm": "gpt_neox.final_layer_norm",
+      "output": "embed_out"
+    },
+    "layers": [
+      {
+        "weights": "gpt_neox.layers.0",
+        "heads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "mlp_repeat": 1
+      },
+      {
+        "weights": "gpt_neox.layers.1",
+        "heads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "mlp_repeat": 1
+      },
+      {
+        "weights": "gpt_neox.layers.2",
+        "heads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "mlp_repeat": 1
+      },
+      {
+        "weights": "gpt_neox.layers.3",
+        "heads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "mlp_repeat": 1
+      },
+      {
+        "weights": "gpt_neox.layers.4",
+        "heads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "mlp_repeat": 1
+      },
+      {
+        "weights": "gpt_neox.layers.5",
+        "heads": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "mlp_repeat": 1
+      }
+    ],
+    "sequence": [
+      {
+        "layers": [
+          0
+        ],
+        "repeat": 1
+      },
+      {
+        "heads": [
+          [
+            0,
+            7
+          ]
+        ],
+        "repeat": 1
+      },
+      {
+        "layers": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "repeat": 1
+      }
+    ]
+  },
+  "unique_parameters": 70426624
+}

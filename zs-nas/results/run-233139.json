@@ -1,0 +1,41 @@
+{
+  "recorded_utc": "2026-11-03T01:32:56.205975+00:00",
+  "allocation": {
+    "job_id": 233139,
+    "partition": "debug",
+    "node": "terrier",
+    "gpus": 1,
+    "time_limit": "02:00:00",
+    "gpu_model": "NVIDIA RTX A6000",
+    "gpu_physical_index": 6
+  },
+  "local_checks": {
+    "unittest_passed": 12,
+    "counting_self_check": "passed",
+    "baseline_cpu_parity_max_logit_error": 0.0
+  },
+  "sha256": {
+    "model.py": "eb54f52073b99e85886d02f070188897cedc165126a80d34f9f120c6b7adcb26",
+    "evaluate.py": "1ded4de68b0c87d7b056e93ced1315d48428493354f5feb8cdf3575fc5dac386",
+    "test_model.py": "d47247127c2d410956258285ccc4254feebd438e14b342303264abd61861c9fb",
+    "requirements.txt": "20028fc4f7a2f972998b5de589b804e29888bcd1a21452a961b7cb868a3a382b",
+    "graphs/baseline.json": "a39b5914ba7c173aa77c23ee3b5c79c0739dd4c5d99bd9b287485edb40de2101",
+    "assets/pythia-70m/model.safetensors": "ebfa4e2f18696ebd83716a0d39fe2c025f2ff8483f72a83ca59c475692fc9d15",
+    "assets/pythia-70m/config.json": "002050231a9b1ec3ac77aa6b9b3bbdc4d923f4068a7dd33b8da72a9bd6ad9a43"
+  },
+  "search_plan": "Screen 108 single changes on 8192 input tokens, then confirm and combine promising changes on 100000 tokens. All CUDA comparisons use the same original executor and FP32 checkpoint. Every proposal is logged before writing its graph.",
+  "cluster_status": "Cluster checks passed; full and screening baselines complete; candidate screening and full loop tests running.",
+  "stage": "/tmp/zs-nas-awsun-233139",
+  "execution": "SSH directly to terrier, srun --jobid=233139 --overlap to execute within allocated resources.",
+  "cluster_checks": {
+    "unittest_passed": 12,
+    "counting_self_check": "passed",
+    "log": "results/cluster-tests.log"
+  },
+  "environment": "results/environment.json",
+  "baseline_results": [
+    "results/baseline-100000.json",
+    "results/baseline-8192.json"
+  ],
+  "orchestration": "experiments/initial.sh"
+}

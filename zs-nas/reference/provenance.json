@@ -1,0 +1,14 @@
+{
+  "model": "EleutherAI/pythia-70m",
+  "revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42",
+  "files": {
+    "modeling_gpt_neox.py": {
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/v4.57.1/src/transformers/models/gpt_neox/modeling_gpt_neox.py",
+      "sha256": "df40f550f72f657e88ac443033dce0cf14403197745e49a9468bb9cd41bf2748"
+    },
+    "LICENSE": {
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/v4.57.1/LICENSE",
+      "sha256": "77fd4710def9ec3c0f6225800e0235f15a425abd4a8b03559127fcd782612049"
+    }
+  }
+}

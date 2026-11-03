@@ -1,0 +1,1000 @@
+{
+  "scope": "Diagnostic only; one full-context forward per graph plus baseline hook parity, not a perplexity estimate.",
+  "input_tokens": 2048,
+  "available_next_token_targets": 2047,
+  "scored_tokens": 0,
+  "sample": "deterministic prefix; rows joined with two newlines; no special tokens",
+  "token_sha256": "1c78eeeaa65c01ce827dd483ce2ac4318afbc8b0b0da46166d31bc4f639826a9",
+  "token_hash_encoding": "2048 little-endian signed int64 IDs",
+  "model": "EleutherAI/pythia-70m",
+  "model_revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42",
+  "dataset": "Salesforce/wikitext",
+  "dataset_config": "wikitext-2-raw-v1",
+  "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+  "split": "validation",
+  "device": "cuda:0",
+  "dtype": "torch.float32",
+  "cosine_scope": "Flattened across batch, token positions and hidden dimensions.",
+  "baseline_hook_max_absolute_logit_error": 0.0,
+  "all_parameters_frozen": true,
+  "parameter_and_buffer_version_counters_unchanged": true,
+  "results": [
+    {
+      "graph": "graphs/baseline.json",
+      "layers": [
+        {
+          "layer": 0,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.029499871656298637,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.2451680302619934,
+            "rms_over_reference_rms": 8.310816764831543,
+            "cosine_with_reference": 0.07015511393547058
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.2451680302619934,
+              "rms_over_reference_rms": 8.310816764831543,
+              "cosine_with_reference": 0.07015511393547058
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.19889235496520996
+          ]
+        },
+        {
+          "layer": 1,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.3130476176738739,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.17574988305568695,
+            "rms_over_reference_rms": 0.5614157915115356,
+            "cosine_with_reference": -0.18634557723999023
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.17574988305568695,
+              "rms_over_reference_rms": 0.5614157915115356,
+              "cosine_with_reference": -0.18634557723999023
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.13423728942871094
+          ]
+        },
+        {
+          "layer": 2,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.3839544653892517,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.25961756706237793,
+            "rms_over_reference_rms": 0.6761676073074341,
+            "cosine_with_reference": -0.240133598446846
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.25961756706237793,
+              "rms_over_reference_rms": 0.6761676073074341,
+              "cosine_with_reference": -0.240133598446846
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.20348286628723145
+          ]
+        },
+        {
+          "layer": 3,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.542533278465271,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.4024994969367981,
+            "rms_over_reference_rms": 0.7418890595436096,
+            "cosine_with_reference": -0.5118741989135742
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.4024994969367981,
+              "rms_over_reference_rms": 0.7418890595436096,
+              "cosine_with_reference": -0.5118741989135742
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2783958911895752
+          ]
+        },
+        {
+          "layer": 4,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.6115051507949829,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.5682339668273926,
+            "rms_over_reference_rms": 0.9292382597923279,
+            "cosine_with_reference": -0.4405571520328522
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.5682339668273926,
+              "rms_over_reference_rms": 0.9292382597923279,
+              "cosine_with_reference": -0.4405571520328522
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2575960159301758
+          ]
+        },
+        {
+          "layer": 5,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.6976850032806396,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 2.2603471279144287,
+            "rms_over_reference_rms": 3.239781618118286,
+            "cosine_with_reference": -0.03886093199253082
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 2.2603471279144287,
+              "rms_over_reference_rms": 3.239781618118286,
+              "cosine_with_reference": -0.03886093199253082
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2514986991882324
+          ]
+        }
+      ]
+    },
+    {
+      "graph": "graphs/screen/repeat-mlp-l0.json",
+      "layers": [
+        {
+          "layer": 0,
+          "mlp_applications": 2,
+          "layer_input_rms": 0.029499871656298637,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.38202011585235596,
+            "rms_over_reference_rms": 12.949891090393066,
+            "cosine_with_reference": 0.055465105921030045
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.2451680302619934,
+              "rms_over_reference_rms": 8.310816764831543,
+              "cosine_with_reference": 0.07015511393547058
+            },
+            {
+              "rms": 0.23885461688041687,
+              "rms_over_reference_rms": 8.0968017578125,
+              "cosine_with_reference": 0.016700509935617447
+            }
+          ],
+          "second_delta_vs_first": {
+            "rms": 0.23885461688041687,
+            "rms_over_reference_rms": 0.9742486476898193,
+            "cosine_with_reference": 0.2457369565963745
+          },
+          "pre_gelu_positive_fraction_per_application": [
+            0.19889235496520996,
+            0.33078885078430176
+          ]
+        },
+        {
+          "layer": 1,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.4453291594982147,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.16362319886684418,
+            "rms_over_reference_rms": 0.3674207925796509,
+            "cosine_with_reference": -0.29238957166671753
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.16362319886684418,
+              "rms_over_reference_rms": 0.3674207925796509,
+              "cosine_with_reference": -0.29238957166671753
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.12999629974365234
+          ]
+        },
+        {
+          "layer": 2,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.47815027832984924,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.2155769020318985,
+            "rms_over_reference_rms": 0.45085597038269043,
+            "cosine_with_reference": -0.3360288739204407
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.2155769020318985,
+              "rms_over_reference_rms": 0.45085597038269043,
+              "cosine_with_reference": -0.3360288739204407
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.1906116008758545
+          ]
+        },
+        {
+          "layer": 3,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.5562742352485657,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.36334723234176636,
+            "rms_over_reference_rms": 0.6531800627708435,
+            "cosine_with_reference": -0.4936782121658325
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.36334723234176636,
+              "rms_over_reference_rms": 0.6531800627708435,
+              "cosine_with_reference": -0.4936782121658325
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2655787467956543
+          ]
+        },
+        {
+          "layer": 4,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.6153092384338379,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.5110226273536682,
+            "rms_over_reference_rms": 0.8305134773254395,
+            "cosine_with_reference": -0.41820964217185974
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.5110226273536682,
+              "rms_over_reference_rms": 0.8305134773254395,
+              "cosine_with_reference": -0.41820964217185974
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.25150418281555176
+          ]
+        },
+        {
+          "layer": 5,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.7093487977981567,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 2.343980312347412,
+            "rms_over_reference_rms": 3.3044114112854004,
+            "cosine_with_reference": -0.060345135629177094
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 2.343980312347412,
+              "rms_over_reference_rms": 3.3044114112854004,
+              "cosine_with_reference": -0.060345135629177094
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2524533271789551
+          ]
+        }
+      ]
+    },
+    {
+      "graph": "graphs/screen/repeat-mlp-l1.json",
+      "layers": [
+        {
+          "layer": 0,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.029499871656298637,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.2451680302619934,
+            "rms_over_reference_rms": 8.310816764831543,
+            "cosine_with_reference": 0.07015511393547058
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.2451680302619934,
+              "rms_over_reference_rms": 8.310816764831543,
+              "cosine_with_reference": 0.07015511393547058
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.19889235496520996
+          ]
+        },
+        {
+          "layer": 1,
+          "mlp_applications": 2,
+          "layer_input_rms": 0.3130476176738739,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.2509158253669739,
+            "rms_over_reference_rms": 0.8015260696411133,
+            "cosine_with_reference": -0.13391268253326416
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.17574988305568695,
+              "rms_over_reference_rms": 0.5614157915115356,
+              "cosine_with_reference": -0.18634557723999023
+            },
+            {
+              "rms": 0.134374737739563,
+              "rms_over_reference_rms": 0.4292469620704651,
+              "cosine_with_reference": -0.006330055184662342
+            }
+          ],
+          "second_delta_vs_first": {
+            "rms": 0.134374737739563,
+            "rms_over_reference_rms": 0.7645794153213501,
+            "cosine_with_reference": 0.29670464992523193
+          },
+          "pre_gelu_positive_fraction_per_application": [
+            0.13423728942871094,
+            0.13175153732299805
+          ]
+        },
+        {
+          "layer": 2,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.4245653450489044,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.25951021909713745,
+            "rms_over_reference_rms": 0.6112374067306519,
+            "cosine_with_reference": -0.18305879831314087
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.25951021909713745,
+              "rms_over_reference_rms": 0.6112374067306519,
+              "cosine_with_reference": -0.18305879831314087
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.19768786430358887
+          ]
+        },
+        {
+          "layer": 3,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.5775565505027771,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.3859155476093292,
+            "rms_over_reference_rms": 0.668186604976654,
+            "cosine_with_reference": -0.49990925192832947
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.3859155476093292,
+              "rms_over_reference_rms": 0.668186604976654,
+              "cosine_with_reference": -0.49990925192832947
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2718682289123535
+          ]
+        },
+        {
+          "layer": 4,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.6427752375602722,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.570239782333374,
+            "rms_over_reference_rms": 0.8871526718139648,
+            "cosine_with_reference": -0.4481084942817688
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.570239782333374,
+              "rms_over_reference_rms": 0.8871526718139648,
+              "cosine_with_reference": -0.4481084942817688
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2552340030670166
+          ]
+        },
+        {
+          "layer": 5,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.7195875644683838,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 2.326815605163574,
+            "rms_over_reference_rms": 3.2335405349731445,
+            "cosine_with_reference": -0.04443659633398056
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 2.326815605163574,
+              "rms_over_reference_rms": 3.2335405349731445,
+              "cosine_with_reference": -0.04443659633398056
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2550160884857178
+          ]
+        }
+      ]
+    },
+    {
+      "graph": "graphs/screen/repeat-mlp-l2.json",
+      "layers": [
+        {
+          "layer": 0,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.029499871656298637,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.2451680302619934,
+            "rms_over_reference_rms": 8.310816764831543,
+            "cosine_with_reference": 0.07015511393547058
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.2451680302619934,
+              "rms_over_reference_rms": 8.310816764831543,
+              "cosine_with_reference": 0.07015511393547058
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.19889235496520996
+          ]
+        },
+        {
+          "layer": 1,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.3130476176738739,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.17574988305568695,
+            "rms_over_reference_rms": 0.5614157915115356,
+            "cosine_with_reference": -0.18634557723999023
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.17574988305568695,
+              "rms_over_reference_rms": 0.5614157915115356,
+              "cosine_with_reference": -0.18634557723999023
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.13423728942871094
+          ]
+        },
+        {
+          "layer": 2,
+          "mlp_applications": 2,
+          "layer_input_rms": 0.3839544653892517,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.3491336405277252,
+            "rms_over_reference_rms": 0.9093100428581238,
+            "cosine_with_reference": -0.2580246925354004
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.25961756706237793,
+              "rms_over_reference_rms": 0.6761676073074341,
+              "cosine_with_reference": -0.240133598446846
+            },
+            {
+              "rms": 0.1952454149723053,
+              "rms_over_reference_rms": 0.5085119009017944,
+              "cosine_with_reference": -0.1420888602733612
+            }
+          ],
+          "second_delta_vs_first": {
+            "rms": 0.1952454149723053,
+            "rms_over_reference_rms": 0.7520501017570496,
+            "cosine_with_reference": 0.1614966094493866
+          },
+          "pre_gelu_positive_fraction_per_application": [
+            0.20348286628723145,
+            0.22413945198059082
+          ]
+        },
+        {
+          "layer": 3,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.5692429542541504,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.39570099115371704,
+            "rms_over_reference_rms": 0.6951355338096619,
+            "cosine_with_reference": -0.4923747777938843
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.39570099115371704,
+              "rms_over_reference_rms": 0.6951355338096619,
+              "cosine_with_reference": -0.4923747777938843
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2743229866027832
+          ]
+        },
+        {
+          "layer": 4,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.623579204082489,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.543586015701294,
+            "rms_over_reference_rms": 0.8717193007469177,
+            "cosine_with_reference": -0.46987098455429077
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.543586015701294,
+              "rms_over_reference_rms": 0.8717193007469177,
+              "cosine_with_reference": -0.46987098455429077
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.25420260429382324
+          ]
+        },
+        {
+          "layer": 5,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.6846867203712463,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 2.245305299758911,
+            "rms_over_reference_rms": 3.279317617416382,
+            "cosine_with_reference": -0.03424619883298874
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 2.245305299758911,
+              "rms_over_reference_rms": 3.279317617416382,
+              "cosine_with_reference": -0.03424619883298874
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.24887752532958984
+          ]
+        }
+      ]
+    },
+    {
+      "graph": "graphs/screen/repeat-mlp-l3.json",
+      "layers": [
+        {
+          "layer": 0,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.029499871656298637,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.2451680302619934,
+            "rms_over_reference_rms": 8.310816764831543,
+            "cosine_with_reference": 0.07015511393547058
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.2451680302619934,
+              "rms_over_reference_rms": 8.310816764831543,
+              "cosine_with_reference": 0.07015511393547058
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.19889235496520996
+          ]
+        },
+        {
+          "layer": 1,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.3130476176738739,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.17574988305568695,
+            "rms_over_reference_rms": 0.5614157915115356,
+            "cosine_with_reference": -0.18634557723999023
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.17574988305568695,
+              "rms_over_reference_rms": 0.5614157915115356,
+              "cosine_with_reference": -0.18634557723999023
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.13423728942871094
+          ]
+        },
+        {
+          "layer": 2,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.3839544653892517,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.25961756706237793,
+            "rms_over_reference_rms": 0.6761676073074341,
+            "cosine_with_reference": -0.240133598446846
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.25961756706237793,
+              "rms_over_reference_rms": 0.6761676073074341,
+              "cosine_with_reference": -0.240133598446846
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.20348286628723145
+          ]
+        },
+        {
+          "layer": 3,
+          "mlp_applications": 2,
+          "layer_input_rms": 0.542533278465271,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.5715830326080322,
+            "rms_over_reference_rms": 1.0535446405410767,
+            "cosine_with_reference": -0.52074134349823
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.4024994969367981,
+              "rms_over_reference_rms": 0.7418890595436096,
+              "cosine_with_reference": -0.5118741989135742
+            },
+            {
+              "rms": 0.34060895442962646,
+              "rms_over_reference_rms": 0.6278120875358582,
+              "cosine_with_reference": -0.2689824104309082
+            }
+          ],
+          "second_delta_vs_first": {
+            "rms": 0.34060895442962646,
+            "rms_over_reference_rms": 0.8462345004081726,
+            "cosine_with_reference": 0.17756643891334534
+          },
+          "pre_gelu_positive_fraction_per_application": [
+            0.2783958911895752,
+            0.3174128532409668
+          ]
+        },
+        {
+          "layer": 4,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.6541526913642883,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.5713722705841064,
+            "rms_over_reference_rms": 0.8734539747238159,
+            "cosine_with_reference": -0.5066559314727783
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.5713722705841064,
+              "rms_over_reference_rms": 0.8734539747238159,
+              "cosine_with_reference": -0.5066559314727783
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.27822422981262207
+          ]
+        },
+        {
+          "layer": 5,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.6690641045570374,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 2.1064562797546387,
+            "rms_over_reference_rms": 3.148362398147583,
+            "cosine_with_reference": -0.04603902995586395
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 2.1064562797546387,
+              "rms_over_reference_rms": 3.148362398147583,
+              "cosine_with_reference": -0.04603902995586395
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.25443291664123535
+          ]
+        }
+      ]
+    },
+    {
+      "graph": "graphs/screen/repeat-mlp-l4.json",
+      "layers": [
+        {
+          "layer": 0,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.029499871656298637,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.2451680302619934,
+            "rms_over_reference_rms": 8.310816764831543,
+            "cosine_with_reference": 0.07015511393547058
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.2451680302619934,
+              "rms_over_reference_rms": 8.310816764831543,
+              "cosine_with_reference": 0.07015511393547058
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.19889235496520996
+          ]
+        },
+        {
+          "layer": 1,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.3130476176738739,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.17574988305568695,
+            "rms_over_reference_rms": 0.5614157915115356,
+            "cosine_with_reference": -0.18634557723999023
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.17574988305568695,
+              "rms_over_reference_rms": 0.5614157915115356,
+              "cosine_with_reference": -0.18634557723999023
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.13423728942871094
+          ]
+        },
+        {
+          "layer": 2,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.3839544653892517,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.25961756706237793,
+            "rms_over_reference_rms": 0.6761676073074341,
+            "cosine_with_reference": -0.240133598446846
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.25961756706237793,
+              "rms_over_reference_rms": 0.6761676073074341,
+              "cosine_with_reference": -0.240133598446846
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.20348286628723145
+          ]
+        },
+        {
+          "layer": 3,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.542533278465271,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.4024994969367981,
+            "rms_over_reference_rms": 0.7418890595436096,
+            "cosine_with_reference": -0.5118741989135742
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.4024994969367981,
+              "rms_over_reference_rms": 0.7418890595436096,
+              "cosine_with_reference": -0.5118741989135742
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2783958911895752
+          ]
+        },
+        {
+          "layer": 4,
+          "mlp_applications": 2,
+          "layer_input_rms": 0.6115051507949829,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.9727705121040344,
+            "rms_over_reference_rms": 1.5907806158065796,
+            "cosine_with_reference": -0.36445048451423645
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.5682339668273926,
+              "rms_over_reference_rms": 0.9292382597923279,
+              "cosine_with_reference": -0.4405571520328522
+            },
+            {
+              "rms": 0.6575788855552673,
+              "rms_over_reference_rms": 1.0753448009490967,
+              "cosine_with_reference": -0.15844056010246277
+            }
+          ],
+          "second_delta_vs_first": {
+            "rms": 0.6575788855552673,
+            "rms_over_reference_rms": 1.157232642173767,
+            "cosine_with_reference": 0.2555576264858246
+          },
+          "pre_gelu_positive_fraction_per_application": [
+            0.2575960159301758,
+            0.3419837951660156
+          ]
+        },
+        {
+          "layer": 5,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.9894070029258728,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 2.3386008739471436,
+            "rms_over_reference_rms": 2.3636388778686523,
+            "cosine_with_reference": -0.06559453904628754
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 2.3386008739471436,
+              "rms_over_reference_rms": 2.3636388778686523,
+              "cosine_with_reference": -0.06559453904628754
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2792022228240967
+          ]
+        }
+      ]
+    },
+    {
+      "graph": "graphs/screen/repeat-mlp-l5.json",
+      "layers": [
+        {
+          "layer": 0,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.029499871656298637,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.2451680302619934,
+            "rms_over_reference_rms": 8.310816764831543,
+            "cosine_with_reference": 0.07015511393547058
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.2451680302619934,
+              "rms_over_reference_rms": 8.310816764831543,
+              "cosine_with_reference": 0.07015511393547058
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.19889235496520996
+          ]
+        },
+        {
+          "layer": 1,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.3130476176738739,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.17574988305568695,
+            "rms_over_reference_rms": 0.5614157915115356,
+            "cosine_with_reference": -0.18634557723999023
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.17574988305568695,
+              "rms_over_reference_rms": 0.5614157915115356,
+              "cosine_with_reference": -0.18634557723999023
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.13423728942871094
+          ]
+        },
+        {
+          "layer": 2,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.3839544653892517,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.25961756706237793,
+            "rms_over_reference_rms": 0.6761676073074341,
+            "cosine_with_reference": -0.240133598446846
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.25961756706237793,
+              "rms_over_reference_rms": 0.6761676073074341,
+              "cosine_with_reference": -0.240133598446846
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.20348286628723145
+          ]
+        },
+        {
+          "layer": 3,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.542533278465271,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.4024994969367981,
+            "rms_over_reference_rms": 0.7418890595436096,
+            "cosine_with_reference": -0.5118741989135742
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.4024994969367981,
+              "rms_over_reference_rms": 0.7418890595436096,
+              "cosine_with_reference": -0.5118741989135742
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2783958911895752
+          ]
+        },
+        {
+          "layer": 4,
+          "mlp_applications": 1,
+          "layer_input_rms": 0.6115051507949829,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 0.5682339668273926,
+            "rms_over_reference_rms": 0.9292382597923279,
+            "cosine_with_reference": -0.4405571520328522
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 0.5682339668273926,
+              "rms_over_reference_rms": 0.9292382597923279,
+              "cosine_with_reference": -0.4405571520328522
+            }
+          ],
+          "second_delta_vs_first": null,
+          "pre_gelu_positive_fraction_per_application": [
+            0.2575960159301758
+          ]
+        },
+        {
+          "layer": 5,
+          "mlp_applications": 2,
+          "layer_input_rms": 0.6976850032806396,
+          "total_mlp_delta_vs_layer_input": {
+            "rms": 5.689786434173584,
+            "rms_over_reference_rms": 8.155237197875977,
+            "cosine_with_reference": 0.05295076221227646
+          },
+          "individual_deltas_vs_layer_input": [
+            {
+              "rms": 2.2603471279144287,
+              "rms_over_reference_rms": 3.239781618118286,
+              "cosine_with_reference": -0.03886093199253082
+            },
+            {
+              "rms": 3.5496668815612793,
+              "rms_over_reference_rms": 5.087778568267822,
+              "cosine_with_reference": 0.10962091386318207
+            }
+          ],
+          "second_delta_vs_first": {
+            "rms": 3.5496668815612793,
+            "rms_over_reference_rms": 1.5704078674316406,
+            "cosine_with_reference": 0.913840651512146
+          },
+          "pre_gelu_positive_fraction_per_application": [
+            0.2514986991882324,
+            0.383617639541626
+          ]
+        }
+      ]
+    }
+  ]
+}
